@@ -1,0 +1,48 @@
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .contact-container {
+    max-width: 500px;
+    padding: 35px 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-container {
+    max-width: 400px;
+    padding: 25px 20px;
+  }
+
+  .contact-container h1 {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    background: linear-gradient(135deg, #6d28d9, #7c3aed);
+    padding: 20px;
+    height: auto;
+  }
+
+  .contact-container {
+    width: 100%;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .contact-container h1 {
+    font-size: 20px;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .contact-form button {
+    font-size: 15px;
+    padding: 10px;
+  }
+}

@@ -1,50 +1,57 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./ContactForm.css";
 
-function App() {
+const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
   });
-  const [responseMessage, setResponseMessage] = useState("");
+
+  const [status, setStatus] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Frontend validation
-    if (!formData.name || !formData.email || !formData.phone || !formData.message) {
-      setResponseMessage("All fields are required!");
+    const { name, email, phone, message } = formData;
+
+    // 1️⃣ Validate empty fields
+    if (!name || !email || !phone || !message) {
+      setStatus("⚠️ Please fill all fields");
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setResponseMessage("Please enter a valid email address.");
+    // 2️⃣ Validate email format
+    if (!validateEmail(email)) {
+      setStatus("⚠️ Invalid email format");
       return;
     }
 
     try {
-      const response = await fetch("https://vernanbackend.ezlab.in/api/contact-us/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      // 3️⃣ API Call
+      const response = await axios.post(
+        "https://vernanbackend.ezlab.in/api/contact-us/",
+        formData
+      );
 
-      if (response.status === 200 || response.status === 201) {
-        setResponseMessage("✅ Form Submitted Successfully!");
+      if (response.status === 200) {
+        setStatus("✅ Form Submitted Successfully!");
         setFormData({ name: "", email: "", phone: "", message: "" });
-      } else {
-        setResponseMessage("❌ Submission Failed. Please try again.");
       }
     } catch (error) {
       console.error(error);
-      setResponseMessage("⚠️ Error connecting to the server.");
+      setStatus("❌ Something went wrong. Try again.");
     }
   };
 
@@ -55,17 +62,19 @@ function App() {
         <input
           type="text"
           name="name"
-          placeholder="Your Name"
+          placeholder="Full Name"
           value={formData.name}
           onChange={handleChange}
         />
+
         <input
           type="email"
           name="email"
-          placeholder="Your Email"
+          placeholder="Email Address"
           value={formData.email}
           onChange={handleChange}
         />
+
         <input
           type="text"
           name="phone"
@@ -73,17 +82,20 @@ function App() {
           value={formData.phone}
           onChange={handleChange}
         />
+
         <textarea
           name="message"
           placeholder="Your Message"
+          rows="4"
           value={formData.message}
           onChange={handleChange}
-        />
+        ></textarea>
+
         <button type="submit">Submit</button>
+        <p className="status">{status}</p>
       </form>
-      {responseMessage && <p className="response">{responseMessage}</p>}
     </div>
   );
-}
+};
 
-export default App;
+export default ContactForm;
